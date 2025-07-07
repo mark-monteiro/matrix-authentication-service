@@ -132,9 +132,8 @@ identity_providers:
       - client_id: "<client-id>" # TO BE FILLED
           client_name: Matrix
           client_secret: "<client-secret>" # TO BE FILLED
-          public: false
           redirect_uris:
-            - https://<mas-fqdn>/upstream/callback/<id>
+            - https://<mas-fqdn>/upstream/callback/<id> # TO BE FILLED
           scopes:
             - openid
             - groups
@@ -143,8 +142,6 @@ identity_providers:
           grant_types:
             - 'refresh_token'
             - 'authorization_code'
-          response_types:
-            - code
 ```
 
 Authentication service configuration:
@@ -152,14 +149,15 @@ Authentication service configuration:
 ```yaml
 upstream_oauth2:
   providers:
-  - id: <id>
+  - id: <id> # TO BE FILLED WITH A VALID ULID
     human_name: Authelia
     issuer: "https://<authelia-fqdn>" # TO BE FILLED W/O ANY TRAILING SLASHES
     client_id: "<client-id>" # TO BE FILLED
     client_secret: "<client-secret>" # TO BE FILLED
     token_endpoint_auth_method: client_secret_basic
     scope: "openid profile email"
-    discovery_mode: insecure
+    discovery_mode: insecure # See: https://github.com/element-hq/matrix-authentication-service/issues/3126
+    fetch_userinfo: true # Required for Authelia v4.39 an onwards. See: https://www.authelia.com/blog/4.39-release-notes/#id-token-changes
     claims_imports:
         localpart:
           action: require
